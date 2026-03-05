@@ -80,4 +80,5 @@ void loadRoutes(std::string filename, std::unordered_map<int, Airport>& airports
 
         row_num++;
     }
+
 }
