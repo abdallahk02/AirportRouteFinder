@@ -84,3 +84,68 @@ std::vector<std::string> minStops(int srcID, int desID, std::unordered_map<int, 
 
     return stops;
 }
+
+std::vector<std::string> minDist(int srcID, int desID, std::unordered_map<int, Airport> airports){
+    std::vector<std::string> stops;
+
+    // Priority calculation (g+h) - distance from start + remaining distance estimate
+    std::priority_queue<std::pair<int,int>, std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> fScores; 
+    // Map aiport n to g(n) - distance from start
+    std::unordered_map<int, double> gScores;
+    // Starting heuristic 
+    int h_start = calculateHaversine(airports[srcID].latitude, airports[srcID].longitude, airports[desID].latitude, airports[desID].longitude);
+    // Path reconstruction
+    std::unordered_map<int, int> previous;
+    std::unordered_set<int> visited;
+
+    bool pathFound = false;
+
+    fScores.push({h_start, srcID});
+    gScores[srcID] = 0;
+
+    while(!fScores.empty()){
+        std::pair<int, int> p = fScores.top();
+        Airport current = airports[p.second];
+        fScores.pop();
+
+        if(visited.find(current.id) != visited.end()){
+            continue;
+        }else{
+            visited.insert(current.id);
+        }
+
+        if(current.id == desID){
+            // Found end of path
+            pathFound = true;
+            break;
+        }
+
+        std::vector<std::pair<int, double>> neighbors = airports[current.id].routes;
+        for(size_t i = 0; i < neighbors.size(); i++){
+            Airport n = airports[neighbors[i].first];
+            double n_g = gScores[current.id] + neighbors[i].second;
+            if(gScores.find(n.id) == gScores.end() || gScores[n.id] > n_g){ // Found new or shorter path to n
+                gScores[n.id] = n_g;
+                double n_h = calculateHaversine(airports[desID].latitude, airports[desID].longitude, n.latitude, n.longitude);
+                double n_f = n_g+n_h;
+                fScores.push({n_f,n.id});
+                previous[n.id] = current.id;
+            }
+        }
+
+
+    }
+
+    if(!pathFound) return {"404"};
+
+    int stopID = desID;
+
+    while(stopID != srcID){
+        stops.push_back(airports[stopID].code);
+        stopID = previous[stopID];
+    }
+    stops.push_back(airports[srcID].code);
+    std::reverse(stops.begin(), stops.end());
+
+    return stops;
+}
