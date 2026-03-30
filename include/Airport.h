@@ -11,7 +11,7 @@ struct Airport{
     std::string code;
     double latitude;
     double longitude;
-    std::vector<std::pair<int, double>> routes;
+    std::unordered_map<int, double> routes;
 };
 
 #endif
