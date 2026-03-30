@@ -11,8 +11,8 @@
 // Returns distance in kilometers
 double calculateHaversine(double lat1, double lon1, double lat2, double lon2);
 
-std::vector<std::string> minStops(int srcID, int desID, std::unordered_map<int, Airport> airports);
+std::vector<std::string> minStops(int srcID, int desID, std::unordered_map<int, Airport> airports, double& distance);
 
-std::vector<std::string> minDist(int srcID, int desID, std::unordered_map<int, Airport> airports);
+std::vector<std::string> minDist(int srcID, int desID, std::unordered_map<int, Airport> airports, double& distance);
 
 #endif
