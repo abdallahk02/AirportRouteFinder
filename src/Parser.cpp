@@ -69,7 +69,7 @@ void loadRoutes(std::string filename, std::unordered_map<int, Airport>& airports
                                                         airports[desID].latitude, airports[desID].longitude);
                 
                 // link route to airport
-                airports[srcID].routes.push_back({desID, distance});
+                airports[srcID].routes[desID] = distance;
 
             }catch(const std::exception& e){
                 std::cout << "loadRoutes: data type error on row " << row_num << std::endl;
@@ -80,5 +80,4 @@ void loadRoutes(std::string filename, std::unordered_map<int, Airport>& airports
 
         row_num++;
     }
-
 }
